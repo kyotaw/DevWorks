@@ -1,0 +1,21 @@
+{
+  "name": "Things",
+  "version": "0.0.1",
+  "private": "true",
+  "scripts": {
+    "start": "node app"
+  },
+  "dependencies": {
+    "body-parser": "*",
+    "connect-flash": "*",
+    "connect-mongo": "*",
+    "cookie-parser": "^1.4.0",
+    "express": "*",
+    "express-session": "*",
+    "jade": "*",
+    "mongoose": "*",
+    "morgan": "^1.6.1",
+    "passport": "*",
+    "passport-local": "*"
+  }
+}

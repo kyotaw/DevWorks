@@ -1,0 +1,29 @@
+extends ./base.jade
+
+block load-libs-head
+  link(rel="stylesheet", href="/static/css/users/users.css")
+
+block content
+  div(ng-app="UsersApp", ng-controller="UsersController")
+    .container
+      .row
+        .col-xs-3
+          .device-list-wrapper
+            デバイス
+            ol.device-list
+              li(ng-repeat="device in user.devices")
+                .device-item(ng-click="showDeviceDetail($index)")
+                  h3 {{ device.name }}
+        .col-xs-8
+          .hardware-list-wrapper
+            ハードウェア
+            ol.hardware-list-wrapper
+              li(ng-repeat="hardware in hardwares")
+                .hardware-item
+                  h3 {{ hardware.type }}
+
+block load-libs-foot
+  script(src="/static/js/users/app.js")
+  script(src="/static/js/users/models/User.js")
+  script(src="/static/js/users/models/Hardware.js")
+  script(src="/static/js/users/controllers/UsersController.js")

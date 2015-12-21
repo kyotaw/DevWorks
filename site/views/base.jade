@@ -1,0 +1,30 @@
+doctype html
+
+head
+  block load-libs-head
+
+body
+  header
+    block header
+      nav.navbar.navbar-default.navbar-fixed-top
+        .container
+          .navbar-left
+            .navbar-header
+              .logo logo
+            ul.nav.navbar-nav
+              li: a(href="") ユーザー
+          .navbar-right
+            ul.nav.navbar-nav
+              li: a(href="") ログアウト
+
+  block content
+
+  script(src="/static/js/libs/jquery/jquery-1.11.3.min.js")
+  script(src="/static/js/libs/angular-1.3.15/angular.min.js")
+  script(src="/static/js/libs/angular-1.3.15/angular-resource.js")
+  script(src="/static/css/libs/bootstrap-3.3.4-dist/js/bootstrap.min.js")
+  link(rel="stylesheet", href="/static/css/libs/bootstrap-3.3.4-dist/css/bootstrap.min.css")
+  link(rel="stylesheet", href="/static/css/base/base.css")
+    
+  block load-libs-foot
+    
