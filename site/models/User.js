@@ -8,7 +8,8 @@ var userSchema = {
 	username: { type: String, required: true },
 	email: { type: String, required: true },
 	password: { type: String, required: true },
-	devices: [{ type: model.Schema.Types.ObjectId, ref: "Device" }]
+	devices: [{ type: model.Schema.Types.ObjectId, ref: "Device" }],
+	auth: { type: model.Schema.Types.ObjectId, ref: "Authentication" }
 }
 
 var User = model.model(userSchema, "User");
@@ -28,4 +29,6 @@ User.count({}, function(err, count) {
 	}
 });
 
-module.exports = User;
+module.exports = {
+	User: User
+}

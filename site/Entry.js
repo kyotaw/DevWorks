@@ -41,15 +41,14 @@
 	}));
 
 	// account
-	var User = require("./models/User");
+	var User = require("./models/User").User;
 	var auth = require("./core/Auth");
 	auth.setAuthUser(User);
 	app.use(passport.initialize());
 	app.use(passport.session());
 
 	// system api authentication
-	var authentication = require("./models/Authentication");
-	authentication.refreshSystemToken();
+	auth.refreshSystemToken();
 	
 	// route
 	router.register(app);

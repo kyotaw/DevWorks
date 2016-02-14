@@ -3,35 +3,25 @@
 
 (function(HardwaresController) {
 	var	Hardware = require('../../../site/models/Hardware')
+	  , JsonRes = require('../core/JsonResponse').JsonResponse
 	  , Device = require('../../../site/models/Device');
 
 	HardwaresController.query = function(req, res) {
 		if (!req.query.deviceId) {
-			return res.json({ 'status': 'success', 'hardwares': [] });
+			return res.json(new JsonRes().error().json);
 		}
-		var query = Device.where({ deviceId: req.query.deviceId });
-		query.findOne(function(err, device) {
+		Device.findOne({'deviceId': req.query.deviceId}, function(err, device) {
 			if (err) {
-				return res.json({ 'status': 'error' });
+				return res.json(new JsonRes().error().json);
 			}
 			if (!device) {
-				return res.json({ 'status': 'error', 'message': 'device not found' });
+				return res.json(new JsonRes().error().messsage('device not found').json);
 			}
 			Hardware.find({ 'device': device._id }).exec(function(err, hardwares) {
 				if (err) {
-					return res.json({ 'status': 'error' });
+					return res.json(new JsonRes().error().json);
 				}
-				var resHarwares = [];
-				var hwCount = hardwares.length;
-				for (var i = 0; i < hwCount; ++i) {
-					var hardware = hardwares[i];
-					resHarwares.push({
-						'naem': hardware.name,
-						'type': hardware.type,
-						'id': hardware.uuid
-					});
-				}
-				return res.json({ 'status': 'success', 'hardwares': resHarwares });
+				return res.json(new JsonRes().success().hardwares(harwares).json);
 			});
 		});
 	

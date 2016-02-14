@@ -1,5 +1,7 @@
 node_modules/
 .DS_Store
+.python-version
+npm-debug.log
 libs/
 Settings.js
 Secret.js

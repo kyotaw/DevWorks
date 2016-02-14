@@ -3,12 +3,14 @@
 
 (function(UsersRouter) {
 	var express = require('express')
-  	  , controller = require('../controllers/UsersController')
+	  , auth = require('../core/Auth')
+	  , loginController = require('../controllers/LoginController')
+  	  , controller = require('../controllers/UsersController');
 
 	UsersRouter.route = function() {
 		var router = express.Router();
 		
-		router.get('/:username', controller.index);
+		router.get('/:username', loginController.isLogined, controller.index);
 
 		return router;
 	}

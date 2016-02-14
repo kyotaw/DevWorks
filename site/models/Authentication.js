@@ -1,30 +1,43 @@
 'use strict';
 
+var hash = require('../utils/Hash')
+  , uuid = require('node-uuid');
 
-var model = require("./Model")
-  , secret = require("../core/Secret")
-  , auth = require("../core/Auth")
+var model = require("../models/Model")
 
 var authSchema = {
 	token: { type: String, required: true, index: { unique: true } },
-	issueDate: { type: Date, required: true },
-	expireDate: { type: Date, required: true },
+	issueDate: { type: Number, required: true },
+	expireDate: { type: Number, required: true },
+	lastUsedDate: { type: Number, require: true },
+	owner: { type: model.Schema.Types.ObjectId, ref: "User" },
+	restriction: { type: model.Schema.Types.ObjectId, ref: "CountRestriction" }
 }
 
 var Authentication = model.model(authSchema, "Authentication");
 
-
-module.exports.Authentication = Authentication;
-
-module.exports.refreshSystemToken = function() {
-	var now = new Date();
-	Authentication.update(
-		{ _id: secret.SYTEM_AUTH_OBJECT_ID },
-		{ $set: { token: auth.SYSTEM_API_TOKEN, issueDate: now, expireDate: now.setYear(now.getYear()) } },
-		function(err, rawRes) {
-			if (err) {
-				console.log("sytem auth update failed");
-			}
-		}
-	);
+Authentication.prototype.isExpired = function() {
+	var now = Date.now();
+	if (now <= this.expireDate) {
+		return false;
+	} else {
+		return true;
+	}
 }
+
+module.exports = {
+	Authentication: Authentication,
+
+	create: function(params) {	
+		params = params || {}; 
+		var now = Date.now();
+		var expireDate = now + (('expire' in params) ? params.expire : 600000);
+		return new Authentication({
+			token: hash.get(uuid.v4()),
+			issueDate: now,
+			expireDate: expireDate,
+			lastUsedDate: now,
+		});
+	}
+}
+

@@ -5,7 +5,10 @@
 	var passport = require("passport")
  	  , LocalStrategy = require("passport-local").Strategy
 	  , hash = require("../utils/Hash")
+	  , User = require('../models/User').User
+	  , Env = require('../core/Env')
 	  , uuid = require("node-uuid")
+	  , rest = require("restler");
 
 	Auth.setAuthUser = function(User) {
 		passport.serializeUser(function(user, callback) {
@@ -22,30 +25,43 @@
 			{ usenameField: "username", passwordField: "password" },
 			function(username, password, done) {
 				process.nextTick(function() {
-					User.findOne({ username: username }, function(err, user) {
-						if (err) {
-							return done(err);
+					rest.post(Env.API_URL + '/api/auth/',{
+						data: {
+							username: username,
+							password: password
 						}
-						if (user) {
-							var passwordHash = hash.get(password);
-							if (user.password === passwordHash) {
-								return done(null, user);
-							}
+					}).on('complete', function(data) {
+						if (data['status'] === 'success') {
+							User.findOne({username: username}).exec(function(err, user) {
+								return done(null, user);	
+							});
+						} else {
+							return done(null, false, { message: "ユーザーIDまたはパスワードが違います。" })
 						}
-						return done(null, false, { message: "ユーザーIDまたはパスワードが違います。" })
 					});
 				});
-			}
-		));
-	}
-
-	Auth.isLogined = function(req, res, next) {
-		if (req.isAuthenticated()) {
-			return next();
-		} else {
-			res.redirect("/login");
-		}
+			})
+		);
 	}
 
 	Auth.SYSTEM_API_TOKEN = hash.get(uuid.v4());
+
+	var Authentication = require('../models/Authentication').Authentication
+  	  , secret = require("../core/Secret");
+
+	Auth.refreshSystemToken = function() {
+		var now = Date.now();
+		var date = new Date();
+		date.setFullYear(date.getFullYear() + 1);
+		var expire = date.getTime();
+		Authentication.update(
+			{ _id: secret.SYTEM_AUTH_OBJECT_ID },
+			{ $set: { token: Auth.SYSTEM_API_TOKEN, issueDate: now, expireDate: expire, lastUsedDate: now, interval: 0 } },
+			function(err, rawRes) {
+				if (err) {
+					console.log("sytem auth update failed");
+				}
+			}
+		);
+	}
 }(exports));

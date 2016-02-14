@@ -12,6 +12,7 @@
     "cookie-parser": "^1.4.0",
     "express": "*",
     "express-session": "*",
+    "express-bearer-token": "*",
     "jade": "*",
     "mongoose": "*",
     "morgan": "^1.6.1",

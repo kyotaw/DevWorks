@@ -3,8 +3,8 @@
 
 (function(LoginController) {
 
-	var auth = require("../core/Auth");
-	var passport = require("passport")
+	var auth = require("../core/Auth")
+	  , passport = require("passport");
 
 	LoginController.login = function(req, res, next) {
 		passport.authenticate("local", function(err, user, info) {
@@ -21,5 +21,13 @@
 				return res.redirect("/users/" + user.username);
 			});
 		})(req, res, next);
+	}
+
+	LoginController.isLogined = function(req, res, next) {
+		if (req.isAuthenticated()) {
+			return next();
+		} else {
+			res.redirect("/login");
+		}
 	}
 }(exports));

@@ -4,7 +4,9 @@
 (function(Route) {
 
 	var usersRouter = require('./UsersRouter')
+	  , devicesRouter = require('./DevicesRouter')
 	  , hardwaresRouter = require('./HardwaresRouter')
+	  , authRouter = require('./AuthRouter')
 	  , header = require('../core/Header');
 	
 	Route.register = function(app) {
@@ -13,9 +15,15 @@
 
 		// users
 		app.use("/api/users", usersRouter.route());
-		
+	
+		// devices
+		app.use('/api/devices', devicesRouter.route());
+
 		// hardwares
 		app.use("/api/hardwares", hardwaresRouter.route());
+
+		// auth
+		app.use('/api/auth', authRouter.route());
 
 		// error handling
 		// not found
